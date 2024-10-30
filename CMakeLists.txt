@@ -1,26 +1,27 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(urinay)
 
-add_compile_options(-std=c++14)
+# Specify C++ standard
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE "Release")
 
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs as_msgs sensor_msgs roslib eigen_conversions)
+# Find dependencies
+find_package(ament_cmake_ros REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(mmr_base REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(nav_msgs REQUIRED)
 
-generate_messages(DEPENDENCIES as_msgs)
-
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES ${PROJECT_NAME}
-)
-
+# Include directories
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(${PROJECT_NAME}_exec src/main.cpp)
-add_library(${PROJECT_NAME}
+# Create library
+add_library(${PROJECT_NAME} SHARED
   src/structures/Point.cpp
   src/structures/Node.cpp
   src/structures/Edge.cpp
@@ -38,19 +39,44 @@ add_library(${PROJECT_NAME}
   src/utils/KDTree.cpp
 )
 
-add_dependencies(${PROJECT_NAME}_exec as_msgs_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME} as_msgs_generate_messages_cpp)
+# Add executable
+add_executable(${PROJECT_NAME}_exec src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME}_exec ${catkin_LIBRARIES} ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+# Link libraries
+target_link_libraries(${PROJECT_NAME}_exec ${PROJECT_NAME} rclcpp)
 
-install(
-  TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+
+ament_target_dependencies(
+  ${PROJECT_NAME} 
+  rclcpp
+  std_msgs
+  sensor_msgs  
+  Eigen3
+  mmr_base
+  nav_msgs
+  geometry_msgs
 )
+ament_target_dependencies(
+  ${PROJECT_NAME}_exec 
+  rclcpp
+  std_msgs
+  sensor_msgs  
+  Eigen3
+  mmr_base
+  nav_msgs
+)
+
+# Install targets and include directories
+install(TARGETS
+  ${PROJECT_NAME}
+  ${PROJECT_NAME}_exec
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 install(
   DIRECTORY include/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include
 )
+
+# ament package
+ament_package()

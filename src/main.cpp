@@ -8,8 +8,10 @@
  * @copyright Copyright (c) 2022 BCN eMotorsport
  */
 
-#include <as_msgs/ConeArray.h>
-#include <as_msgs/PathLimits.h>
+#include <mmr_base/msg/marker_array.hpp>
+
+/*#include <as_msgs/ConeArray.h>
+#include <as_msgs/PathLimits.h>*/
 #include <ros/package.h>
 #include <ros/ros.h>
 #include <sys/stat.h>
@@ -22,8 +24,8 @@
 #include "utils/Time.hpp"
 
 // Publishers are initialized here
-ros::Publisher pubPartial;
-ros::Publisher pubFull;
+auto pubPartial;
+auto pubFull;
 
 WayComputer *wayComputer;
 Params *params;
@@ -31,11 +33,11 @@ Params *params;
 // This is the map callback
 void callback_ccat(const as_msgs::ConeArray::ConstPtr &data) {
   if (not wayComputer->isLocalTfValid()) {
-    ROS_WARN("[urinay] CarState not being received.");
+    ROS_WARN(rclcpp::get_logger(""), "[urinay] CarState not being received.");
     return;
   }
   if (data->cones.empty()) {
-    ROS_WARN("[urinay] reading empty set of cones.");
+    ROS_WARN(rclcpp::get_logger(""), "[urinay] reading empty set of cones.");
     return;
   }
 
@@ -95,8 +97,8 @@ int main(int argc, char **argv) {
   ros::Subscriber subCones = nh->subscribe(params->main.input_cones_topic, 1, callback_ccat);
   ros::Subscriber subPose = nh->subscribe(params->main.input_pose_topic, 1, &WayComputer::stateCallback, wayComputer);
 
-  pubPartial = nh->advertise<as_msgs::PathLimits>(params->main.output_partial_topic, 1);
-  pubFull = nh->advertise<as_msgs::PathLimits>(params->main.output_full_topic, 1);
+  pubPartial = nh->advertise<mmr_base::msg::MarkerArray>(params->main.output_partial_topic, 1);
+  pubFull = nh->advertise<mmr_base::msg::MarkerArray>(params->main.output_full_topic, 1);
 
   ros::spin();
 }

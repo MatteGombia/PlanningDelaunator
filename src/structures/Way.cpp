@@ -60,7 +60,7 @@ const Edge &Way::back() const {
 }
 
 const Edge &Way::beforeBack() const {
-  ROS_ASSERT(this->size() >= 2);
+  assert(this->size() >= 2);
   return *(++this->path_.rbegin());
 }
 

@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <ros/ros.h>
+#include <cassert>
 
 #include <iostream>
 #include <memory>

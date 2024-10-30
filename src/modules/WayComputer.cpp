@@ -267,11 +267,11 @@ WayComputer::WayComputer(const Params::WayComputer &params) : params_(params) {
   this->generalFailsafe_.initGeneral(this->params_.search, this->params_.general_failsafe_safetyFactor, this->params_.failsafe_max_way_horizon_size);
 }
 
-void WayComputer::stateCallback(const as_msgs::CarState::ConstPtr &data) {
+void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) {
   geometry_msgs::Pose pose;
-  pose.position = data->odom.position;
+  pose.position = data->pose.pose.position;
   tf::Quaternion qAux;
-  qAux.setRPY(0.0, 0.0, data->odom.heading);
+  qAux.setRPY(0.0, 0.0, data->odom.header);
   tf::quaternionTFToMsg(qAux, pose.orientation);
   tf::poseMsgToEigen(pose, this->localTf_);
 
@@ -363,18 +363,18 @@ Tracklimits WayComputer::getTracklimits() const {
   return this->wayToPublish_.getTracklimits();
 }
 
-as_msgs::PathLimits WayComputer::getPathLimits() const {
-  as_msgs::PathLimits res;
-  res.stamp = this->lastStamp_;
+mmr_base::msg::MarkerArray WayComputer::getPathLimits() const {
+  mmr_base::msg::MarkerArray res;
+  res.markers.header.stamp = this->lastStamp_;
 
   // res.replan indicates if the Way is different from last iteration's
-  res.replan = this->way_ != this->lastWay_;
+  //res.replan = this->way_ != this->lastWay_;
 
   // Fill path
   std::vector<Point> path = this->wayToPublish_.getPath();
-  res.path.reserve(path.size());
+  res.pose.markers.position.reserve(path.size());
   for (const Point &p : path) {
-    res.path.push_back(p.gmPoint());
+    res.markers.pose.position.push_back(p.gmPoint());
   }
 
   // Fill Tracklimits

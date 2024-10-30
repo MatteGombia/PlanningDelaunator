@@ -10,9 +10,9 @@
 
 #pragma once
 
-#include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
-#include <visualization_msgs/MarkerArray.h>
+#include <rclcpp/rclcpp.hpp>
+#include <mmr_base/msg/marker.hpp>
+#include <mmr_base/msg/marker_array.hpp>
 
 #include "structures/Way.hpp"
 #include "utils/Params.hpp"
@@ -27,7 +27,7 @@ class Visualization {
   /**
    * @brief All Markers publishers.
    */
-  ros::Publisher trianglesPub, midpointsPub, wayPub;
+  rclcpp::Publisher<mmr_base::msg::MarkerArray> trianglesPub, midpointsPub, wayPub;
   
   /**
    * @brief All parameters related to the Visualization class.
@@ -37,7 +37,7 @@ class Visualization {
   /**
    * @brief All Markers will be published with this timestamp.
    */
-  ros::Time stamp_;
+  rclcpp::Time stamp_;
 
  public:
   /**
@@ -56,7 +56,7 @@ class Visualization {
    * @param[in] nh 
    * @param[in] params 
    */
-  void init(ros::NodeHandle *const nh, const Params::Visualization &params);
+  void init(rclcpp::Node::SharedPtr const nh, const Params::Visualization &params);
   
   /**
    * @brief Sets the \a stamp_ attribute, all Markers will be published with
@@ -64,7 +64,7 @@ class Visualization {
    * 
    * @param[in] stamp 
    */
-  void setTimestamp(const ros::Time &stamp);
+  void setTimestamp(const rclcpp::Time &stamp);
 
   /**
    * @brief Method to visualize a TriangleSet.

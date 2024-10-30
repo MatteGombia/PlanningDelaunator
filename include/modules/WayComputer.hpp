@@ -10,10 +10,12 @@
 
 #pragma once
 
-#include <as_msgs/CarState.h>
-#include <as_msgs/Tracklimits.h>
+#include <nav_msgs/msg/odometry.hpp>
+#include <mmr_base/msg/marker_array.hpp>
+/*#include <as_msgs/CarState.h>
+#include <as_msgs/Tracklimits.h>*/
 #include <eigen_conversions/eigen_msg.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <tf/transform_datatypes.h>
 
 #include <fstream>
@@ -177,7 +179,7 @@ class WayComputer {
    *
    * @param[in] data
    */
-  void stateCallback(const as_msgs::CarState::ConstPtr &data);
+  void stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data);
 
   /**
    * @brief Takes the Delaunay triangle set and computes the Way.
@@ -220,8 +222,8 @@ class WayComputer {
   Tracklimits getTracklimits() const;
 
   /**
-   * @brief Returns the centerline and track limits in as_msgs format
+   * @brief Returns the centerline and track limits in Marker Array format
    * in global coordinates.
    */
-  as_msgs::PathLimits getPathLimits() const;
+  mmr_base::msg::MarkerArray getPathLimits() const;
 };

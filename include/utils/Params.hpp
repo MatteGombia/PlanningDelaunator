@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <ros/package.h>
-#include <ros/ros.h>
+//#include <ros/package.h>
+#include <rclcpp/rclcpp.hpp>
 
 /**
  * @brief Represents all the parameters that the program needs divided into
@@ -22,7 +22,7 @@
  */
 class Params {
  public:
-  Params(ros::NodeHandle *const nh);
+  Params(rclcpp::Node::SharedPtr const nh);
   struct Main {
     std::string input_cones_topic, input_pose_topic, output_full_topic, output_partial_topic;
     std::string markers_full_topic, markers_partial_topic;

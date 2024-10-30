@@ -47,12 +47,12 @@ size_t Trace::size() const {
 }
 
 Trace Trace::before() const {
-  ROS_ASSERT(not empty());
+  assert(!empty());
   return Trace(p->before);
 }
 
 Trace Trace::first() const {
-  ROS_ASSERT(not empty());
+  assert(!empty());
   std::shared_ptr<Connection> lastNotEmpty = p;
   while (lastNotEmpty->before != nullptr) {
     lastNotEmpty = lastNotEmpty->before;
@@ -61,12 +61,12 @@ Trace Trace::first() const {
 }
 
 const size_t &Trace::edgeInd() const {
-  ROS_ASSERT(not empty());
+  assert(!empty());
   return this->p->edgeInd;
 }
 
 const double &Trace::heur() const {
-  ROS_ASSERT(not empty());
+  assert(!empty());
   return this->p->heur;
 }
 

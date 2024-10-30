@@ -14,10 +14,10 @@
 
 /* ----------------------------- Public Methods ----------------------------- */
 
-Params::Params(ros::NodeHandle *const nh) {
-  std::string ns = ros::this_node::getName();
+Params::Params(rclcpp::Node::SharedPtr const nh) {
+  std::string ns = rclcpp::this_node::getName();
   // Main
-  main.package_path = ros::package::getPath("urinay");
+  main.package_path = rclcpp::package::getPath("urinay");
   nh->param<std::string>(ns + "/input_cones_topic", main.input_cones_topic, "/AS/P/ccat/cones");
   nh->param<std::string>(ns + "/input_pose_topic", main.input_pose_topic, "/AS/C/state");
   nh->param<std::string>(ns + "/output_full_topic", main.output_full_topic, "/AS/P/tracklimits/full");

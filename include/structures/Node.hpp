@@ -10,9 +10,10 @@
 
 #pragma once
 
-#include <as_msgs/Cone.h>
-#include <geometry_msgs/Point.h>
-#include <ros/ros.h>
+#include <mmr_base/msg/marker.hpp>
+//#include <as_msgs/Cone.h>
+#include <geometry_msgs/msg/point.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include <Eigen/Geometry>
 #include <cmath>
@@ -23,7 +24,7 @@
 #include "utils/constants.hpp"
 
 /**
- * @brief Represents a node, i.e. the useful part of an as_msgs::Cone
+ * @brief Represents a node, i.e. the useful part of an mmr_base::msg::Marker
  * (positions and id).
  */
 class Node {
@@ -83,11 +84,11 @@ class Node {
   Node(const double &x, const double &y, const double &xGlobal, const double &yGlobal, const uint32_t &id);
 
   /**
-   * @brief Construct a new Node object from an as_msgs::Cone.
+   * @brief Construct a new Node object from an mmr_base::msg::Marker.
    *
    * @param[in] c
    */
-  Node(const as_msgs::Cone &c);
+  Node(const mmr_base::msg::Marker &c);
 
   /**
    * @brief Returns the Node x local coordinate.
@@ -160,9 +161,9 @@ class Node {
   double angleWith(const Node &n0, const Node &n1) const;
 
   /**
-   * @brief Converts (and returns) the Node as an as_msgs::Cone.
+   * @brief Converts (and returns) the Node as an mmr_base::msg::Marker.
    */
-  as_msgs::Cone cone() const;
+  mmr_base::msg::Marker cone() const;
 
   /**
    * @brief Cout operator.

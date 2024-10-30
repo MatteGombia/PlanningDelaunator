@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <geometry_msgs/Point.h>
+#include <geometry_msgs/msg/point.hpp>
 
 #include <cmath>
 #include <iostream>
@@ -101,9 +101,9 @@ class Point {
   Point transformed(const Eigen::Affine3d &tf) const;
 
   /**
-   * @brief Converts the point to a geometry_msgs::Point.
+   * @brief Converts the point to a geometry_msgs::msg::Point.
    */
-  geometry_msgs::Point gmPoint() const;
+  geometry_msgs::msg::Point gmPoint() const;
 
   /**
    * @brief Returns the coordinate of the position specified by \a ind.

@@ -18,7 +18,7 @@ Point::Point(const double &x, const double &y) : x(x), y(y) {}
 
 template <typename T>
 Point::Point(const T &point) : x(point.x), y(point.y) {}
-template Point::Point<geometry_msgs::Point>(const geometry_msgs::Point &);
+template Point::Point<geometry_msgs::msg::Point>(const geometry_msgs::msg::Point &);
 
 /**
  * PRIVATE METHODS
@@ -92,8 +92,8 @@ Point Point::transformed(const Eigen::Affine3d &tf) const {
   return Point(product.x(), product.y());
 }
 
-geometry_msgs::Point Point::gmPoint() const {
-  geometry_msgs::Point res;
+geometry_msgs::msg::Point Point::gmPoint() const {
+  geometry_msgs::msg::Point res;
   res.x = this->x;
   res.y = this->y;
   res.z = 0.0;

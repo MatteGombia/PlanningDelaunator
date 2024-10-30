@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <map>
 #include <stdexcept>
@@ -22,7 +22,7 @@
  */
 class Time {
  private:
-  static std::map<std::string, ros::WallTime> clocks_;
+  static std::map<std::string, rclcpp::Time> clocks_;
 
  public:
   Time() = delete;
@@ -40,5 +40,5 @@ class Time {
    * 
    * @param[in] clockName 
    */
-  static ros::WallDuration tock(const std::string &clockName);
+  static rclcpp::Duration tock(const std::string &clockName);
 };
