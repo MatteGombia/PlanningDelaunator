@@ -13,6 +13,8 @@ find_package(sensor_msgs REQUIRED)
 find_package(mmr_base REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 # Include directories
 include_directories(
@@ -22,17 +24,17 @@ include_directories(
 
 # Create library
 add_library(${PROJECT_NAME} SHARED
-  src/structures/Point.cpp
-  src/structures/Node.cpp
-  src/structures/Edge.cpp
-  src/structures/Circle.cpp
-  src/structures/Triangle.cpp
-  src/structures/Trace.cpp
-  src/structures/Vector.cpp
-  src/structures/Way.cpp
-  src/modules/DelaunayTri.cpp
-  src/modules/WayComputer.cpp
-  src/modules/Visualization.cpp
+  # src/structures/Point.cpp
+  # src/structures/Node.cpp
+  # src/structures/Edge.cpp
+  # src/structures/Circle.cpp
+  # src/structures/Triangle.cpp
+  # src/structures/Trace.cpp
+  # src/structures/Vector.cpp
+  # src/structures/Way.cpp
+  # src/modules/DelaunayTri.cpp
+  # src/modules/WayComputer.cpp
+  # src/modules/Visualization.cpp
   src/utils/Time.cpp
   src/utils/Params.cpp
   src/utils/Failsafe.cpp
@@ -43,7 +45,7 @@ add_library(${PROJECT_NAME} SHARED
 add_executable(${PROJECT_NAME}_exec src/main.cpp)
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME}_exec ${PROJECT_NAME} rclcpp)
+target_link_libraries(${PROJECT_NAME}_exec ${PROJECT_NAME})
 
 
 ament_target_dependencies(
@@ -55,7 +57,10 @@ ament_target_dependencies(
   mmr_base
   nav_msgs
   geometry_msgs
+  tf2_eigen
+  tf2_geometry_msgs
 )
+
 ament_target_dependencies(
   ${PROJECT_NAME}_exec 
   rclcpp

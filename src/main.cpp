@@ -12,93 +12,92 @@
 
 /*#include <as_msgs/ConeArray.h>
 #include <as_msgs/PathLimits.h>*/
-#include <ros/package.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <sys/stat.h>
 
 #include <iostream>
 
 #include "modules/DelaunayTri.hpp"
-#include "modules/Visualization.hpp"
+// #include "modules/Visualization.hpp"
 #include "modules/WayComputer.hpp"
 #include "utils/Time.hpp"
 
 // Publishers are initialized here
-auto pubPartial;
-auto pubFull;
+// auto pubPartial;
+// auto pubFull;
 
 WayComputer *wayComputer;
 Params *params;
 
 // This is the map callback
-void callback_ccat(const as_msgs::ConeArray::ConstPtr &data) {
-  if (not wayComputer->isLocalTfValid()) {
-    ROS_WARN(rclcpp::get_logger(""), "[urinay] CarState not being received.");
-    return;
-  }
-  if (data->cones.empty()) {
-    ROS_WARN(rclcpp::get_logger(""), "[urinay] reading empty set of cones.");
-    return;
-  }
+// void callback_ccat(const as_msgs::ConeArray::ConstPtr &data) {
+//   if (not wayComputer->isLocalTfValid()) {
+//     RCLCPP::WARN(rclcpp::get_logger(""), "[urinay] CarState not being received.");
+//     return;
+//   }
+//   if (data->cones.empty()) {
+//     RCLCPP::WARN(rclcpp::get_logger(""), "[urinay] reading empty set of cones.");
+//     return;
+//   }
 
-  Time::tick("computation");  // Start measuring time
+//   Time::tick("computation");  // Start measuring time
 
-  // Convert to Node vector
-  std::vector<Node> nodes;
-  nodes.reserve(data->cones.size());
-  for (const as_msgs::Cone &c : data->cones) {
-    if (c.confidence >= params->main.min_cone_confidence) 
-      nodes.emplace_back(c);
-  }
+//   // Convert to Node vector
+//   std::vector<Node> nodes;
+//   nodes.reserve(data->cones.size());
+//   for (const as_msgs::Cone &c : data->cones) {
+//     if (c.confidence >= params->main.min_cone_confidence) 
+//       nodes.emplace_back(c);
+//   }
 
-  // Update local coordinates of Nodes (makes original local coords unnecessary)
-  for (const Node &n : nodes) {
-    n.updateLocal(wayComputer->getLocalTf());
-  }
+//   // Update local coordinates of Nodes (makes original local coords unnecessary)
+//   for (const Node &n : nodes) {
+//     n.updateLocal(wayComputer->getLocalTf());
+//   }
 
-  // Delaunay triangulation
-  TriangleSet triangles = DelaunayTri::compute(nodes);
+//   // Delaunay triangulation
+//   TriangleSet triangles = DelaunayTri::compute(nodes);
 
-  // Update the way with the new triangulation
-  wayComputer->update(triangles, data->stamp);
+//   // Update the way with the new triangulation
+//   wayComputer->update(triangles, data->stamp);
 
-  // Publish loop and write tracklimits to a file
-  if (wayComputer->isLoopClosed()) {
-    pubFull.publish(wayComputer->getPathLimits());
-    ROS_INFO("[urinay] Tanco loop");
-    std::string loopDir = params->main.package_path + "/loops";
-    mkdir(loopDir.c_str(), 0777);
-    wayComputer->writeWayToFile(loopDir + "/loop.unay");
-    if (params->main.shutdown_on_loop_closure) {
-      Time::tock("computation");  // End measuring time
-      ROS_INFO("[urinay] Tingui bon dia :)");
-      ros::shutdown();
-    }
-  }
-  // Publish partial
-  else {
-    pubPartial.publish(wayComputer->getPathLimits());
-  }
+//   // Publish loop and write tracklimits to a file
+//   if (wayComputer->isLoopClosed()) {
+//     pubFull.publish(wayComputer->getPathLimits());
+//     ROS_INFO("[urinay] Tanco loop");
+//     std::string loopDir = params->main.package_path + "/loops";
+//     mkdir(loopDir.c_str(), 0777);
+//     wayComputer->writeWayToFile(loopDir + "/loop.unay");
+//     if (params->main.shutdown_on_loop_closure) {
+//       Time::tock("computation");  // End measuring time
+//       ROS_INFO("[urinay] Tingui bon dia :)");
+//       ros::shutdown();
+//     }
+//   }
+//   // Publish partial
+//   else {
+//     pubPartial.publish(wayComputer->getPathLimits());
+//   }
 
-  Time::tock("computation");  // End measuring time
-}
+//   Time::tock("computation");  // End measuring time
+// }
 
 // Main
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "urinay");
+  rclcpp::init(argc, argv);
 
-  ros::NodeHandle *const nh = new ros::NodeHandle;
+  auto nh = rclcpp::Node::make_shared("urinay");
 
-  params = new Params(nh);
-  wayComputer = new WayComputer(params->wayComputer);
-  Visualization::getInstance().init(nh, params->visualization);
+  // params = new Params(nh);
+  // wayComputer = new WayComputer(params->wayComputer);
+  // Visualization::getInstance().init(nh, params->visualization);
 
   // Subscribers & Publishers
-  ros::Subscriber subCones = nh->subscribe(params->main.input_cones_topic, 1, callback_ccat);
-  ros::Subscriber subPose = nh->subscribe(params->main.input_pose_topic, 1, &WayComputer::stateCallback, wayComputer);
+  // auto subCones = nh->create_subscription<mmr_base::geometry_msgs>(params->main.input_cones_topic, 1, callback_ccat);
+  // auto subPose = nh->create_subscription<geometry_msgs::msg::PoseStamped>(params->main.input_pose_topic, 1, std::bind(&WayComputer::stateCallback, wayComputer, std::placeholders::_1));
 
-  pubPartial = nh->advertise<mmr_base::msg::MarkerArray>(params->main.output_partial_topic, 1);
-  pubFull = nh->advertise<mmr_base::msg::MarkerArray>(params->main.output_full_topic, 1);
+  // pubPartial = nh->advertise<mmr_base::msg::MarkerArray>(params->main.output_partial_topic, 1);
+  // pubFull = nh->advertise<mmr_base::msg::MarkerArray>(params->main.output_full_topic, 1);
 
-  ros::spin();
+  rclcpp::spin(nh);
 }

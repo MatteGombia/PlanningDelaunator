@@ -14,9 +14,9 @@
 #include <mmr_base/msg/marker_array.hpp>
 /*#include <as_msgs/CarState.h>
 #include <as_msgs/Tracklimits.h>*/
-#include <eigen_conversions/eigen_msg.h>
+#include <tf2_eigen/tf2_eigen.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <tf/transform_datatypes.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 #include <fstream>
 #include <queue>
@@ -62,7 +62,7 @@ class WayComputer {
   /**
    * @brief Last data timestamp.
    */
-  ros::Time lastStamp_;
+  rclcpp::Time lastStamp_;
 
   /**
    * @brief Whether or not \a way_ has its loop closed.
@@ -187,7 +187,7 @@ class WayComputer {
    * @param[in,out] triangulation
    * @param[in] stamp
    */
-  void update(TriangleSet &triangulation, const ros::Time &stamp);
+  void update(TriangleSet &triangulation, const rclcpp::Time &stamp);
 
   /**
    * @brief Returns if the loop has been closed.

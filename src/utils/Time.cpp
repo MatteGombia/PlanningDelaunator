@@ -15,20 +15,20 @@ std::map<std::string, rclcpp::Time> Time::clocks_;
 void Time::tick(const std::string &clockName) {
   std::map<std::string, rclcpp::Time>::iterator it = clocks_.find(clockName);
   if (it != clocks_.end()) {
-    ROS_WARN(rclcpp::get_logger(""), "[urinay] Called tick() two times with same clockName before calling tock()");
-    it->second = std::chrono::steady_clock::now();
+    RCLCPP_WARN(rclcpp::get_logger(""), "[urinay] Called tick() two times with same clockName before calling tock()");
+    it->second = rclcpp::Time(std::chrono::steady_clock::now().time_since_epoch().count());
   } else {
-    clocks_.emplace(clockName, std::chrono::steady_clock::now());
+    clocks_.emplace(clockName, rclcpp::Time(std::chrono::steady_clock::now().time_since_epoch().count()));
   }
 }
 
 rclcpp::Duration Time::tock(const std::string &clockName) {
   std::map<std::string, rclcpp::Time>::iterator it = clocks_.find(clockName);
-  rclcpp::Duration res;
+  rclcpp::Duration res(0, 0);
   if (it == clocks_.end()) {
-    ROS_ERROR(rclcpp::get_logger(""), "[urinay] Called tock() before calling tick()");
+    RCLCPP_ERROR(rclcpp::get_logger(""), "[urinay] Called tock() before calling tick()");
   } else {
-    res = std::chrono::steady_clock::now().to_time_t() - it->second;
+    res = rclcpp::Time(std::chrono::steady_clock::now().time_since_epoch().count()) - it->second;
     RCLCPP_INFO_STREAM(rclcpp::get_logger(""), "[urinay] " << it->first << " has taken: " << res.seconds() * 1e3 << "ms");
     clocks_.erase(it);
   }
