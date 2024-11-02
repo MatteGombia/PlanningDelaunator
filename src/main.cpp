@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include "modules/DelaunayTri.hpp"
-// #include "modules/Visualization.hpp"
+#include "modules/Visualization.hpp"
 #include "modules/WayComputer.hpp"
 #include "utils/Time.hpp"
 

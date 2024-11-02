@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(urinay)
 
 # Specify C++ standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE "Release")
 
 # Find dependencies
@@ -34,7 +34,7 @@ add_library(${PROJECT_NAME} SHARED
   src/structures/Way.cpp
   # src/modules/DelaunayTri.cpp
   # src/modules/WayComputer.cpp
-  # src/modules/Visualization.cpp
+  src/modules/Visualization.cpp
   src/utils/Time.cpp
   src/utils/Params.cpp
   src/utils/Failsafe.cpp

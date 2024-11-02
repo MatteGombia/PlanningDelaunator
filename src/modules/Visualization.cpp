@@ -26,15 +26,15 @@ Visualization &Visualization::getInstance() {
 void Visualization::init(rclcpp::Node::SharedPtr const nh, const Params::Visualization &params) {
   params_ = params;
   if (params.publish_markers) {
-    trianglesPub = nh->advertise<mmr_base::msg::MarkerArray>(params_.triangulation_topic, 1);
-    midpointsPub = nh->advertise<mmr_base::msg::MarkerArray>(params_.midpoints_topic, 1);
-    wayPub = nh->advertise<mmr_base::msg::MarkerArray>(params_.way_topic, 1);
+    trianglesPub = nh->create_publisher<mmr_base::msg::MarkerArray>(params_.triangulation_topic, 1);
+    midpointsPub = nh->create_publisher<mmr_base::msg::MarkerArray>(params_.midpoints_topic, 1);
+    wayPub = nh->create_publisher<mmr_base::msg::MarkerArray>(params_.way_topic, 1);
   }
 }
 
 void Visualization::visualize(const TriangleSet &triSet) const {
   if (not this->params_.publish_markers) return;
-  if (trianglesPub.getNumSubscribers() <= 0) return;
+  if (trianglesPub->get_subscription_count() <= 0) return;
 
   mmr_base::msg::MarkerArray ma;
   ma.markers.reserve(1 + 5 * triSet.size());
@@ -91,12 +91,12 @@ void Visualization::visualize(const TriangleSet &triSet) const {
       ma.markers.push_back(mMidpoint);
     }
   }
-  trianglesPub.publish(ma);
+  trianglesPub->publish(ma);
 }
 
 void Visualization::visualize(const EdgeSet &edgeSet) const {
   if (not this->params_.publish_markers) return;
-  if (midpointsPub.getNumSubscribers() <= 0) return;
+  if (midpointsPub->get_subscription_count() <= 0) return;
 
   mmr_base::msg::MarkerArray ma;
   ma.markers.reserve(edgeSet.size() + 1);
@@ -121,12 +121,12 @@ void Visualization::visualize(const EdgeSet &edgeSet) const {
     mMidpoint.id = id++;
     ma.markers.push_back(mMidpoint);
   }
-  midpointsPub.publish(ma);
+  midpointsPub->publish(ma);
 }
 
 void Visualization::visualize(const Way &way) const {
   if (not this->params_.publish_markers) return;
-  if (wayPub.getNumSubscribers() <= 0) return;
+  if (wayPub->get_subscription_count() <= 0) return;
 
   mmr_base::msg::MarkerArray ma;
   ma.markers.reserve(3 * way.size() + 1);
@@ -173,5 +173,5 @@ void Visualization::visualize(const Way &way) const {
   }
   ma.markers.push_back(mRight);
 
-  wayPub.publish(ma);
+  wayPub->publish(ma);
 }

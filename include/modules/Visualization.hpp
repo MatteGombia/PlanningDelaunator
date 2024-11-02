@@ -27,7 +27,7 @@ class Visualization {
   /**
    * @brief All Markers publishers.
    */
-  rclcpp::Publisher<mmr_base::msg::MarkerArray> trianglesPub, midpointsPub, wayPub;
+  rclcpp::Publisher<mmr_base::msg::MarkerArray>::SharedPtr trianglesPub, midpointsPub, wayPub;
   
   /**
    * @brief All parameters related to the Visualization class.
