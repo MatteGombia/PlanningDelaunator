@@ -24,14 +24,14 @@ include_directories(
 
 # Create library
 add_library(${PROJECT_NAME} SHARED
-  # src/structures/Point.cpp
-  # src/structures/Node.cpp
-  # src/structures/Edge.cpp
-  # src/structures/Circle.cpp
-  # src/structures/Triangle.cpp
-  # src/structures/Trace.cpp
-  # src/structures/Vector.cpp
-  # src/structures/Way.cpp
+  src/structures/Point.cpp
+  src/structures/Node.cpp
+  src/structures/Edge.cpp
+  src/structures/Circle.cpp
+  src/structures/Triangle.cpp
+  src/structures/Trace.cpp
+  src/structures/Vector.cpp
+  src/structures/Way.cpp
   # src/modules/DelaunayTri.cpp
   # src/modules/WayComputer.cpp
   # src/modules/Visualization.cpp
