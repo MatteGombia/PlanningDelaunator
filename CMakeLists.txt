@@ -32,8 +32,8 @@ add_library(${PROJECT_NAME} SHARED
   src/structures/Trace.cpp
   src/structures/Vector.cpp
   src/structures/Way.cpp
-  # src/modules/DelaunayTri.cpp
-  # src/modules/WayComputer.cpp
+  src/modules/DelaunayTri.cpp
+  src/modules/WayComputer.cpp
   src/modules/Visualization.cpp
   src/utils/Time.cpp
   src/utils/Params.cpp

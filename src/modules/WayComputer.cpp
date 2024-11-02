@@ -184,10 +184,10 @@ size_t WayComputer::treeSearch(std::vector<HeurInd> &nextEdges, const KDTree &mi
   // This loop will realize the tree search and get the longest (& best) path.
   // The loop will stop if the tree search is completed or a time limit has
   // been exceeded.
-  ros::WallTime searchBeginTime = ros::WallTime::now();
+  auto searchBeginTime = rclcpp::Clock().now();
   while (not cua.empty()) {
-    if (ros::WallTime::now() - searchBeginTime > ros::WallDuration(params.max_treeSearch_time)) {
-      ROS_WARN("[urinay] Time limit exceeded in tree search.");
+    if (rclcpp::Clock().now() - searchBeginTime > rclcpp::Duration::from_seconds(params.max_treeSearch_time)) {
+      RCLCPP_WARN(rclcpp::get_logger("urinay"), "Tree search time limit exceeded.");
       break;
     }
     Trace t = cua.front();
@@ -240,7 +240,7 @@ void WayComputer::computeWay(const std::vector<Edge> &edges, const Params::WayCo
 
   // Main outer loop, every iteration of this loop will involve adding one
   // midpoint to the path.
-  while (ros::ok() and not nextEdges.empty() and (!params.max_way_horizon_size or this->way_.sizeAheadOfCar() <= params.max_way_horizon_size)) {
+  while (rclcpp::ok() and not nextEdges.empty() and (!params.max_way_horizon_size or this->way_.sizeAheadOfCar() <= params.max_way_horizon_size)) {
     size_t nextEdgeInd = this->treeSearch(nextEdges, midpointsKDT, edges, params);
 
     // Append the new Edge
@@ -268,21 +268,21 @@ WayComputer::WayComputer(const Params::WayComputer &params) : params_(params) {
 }
 
 void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) {
-  geometry_msgs::Pose pose;
+  geometry_msgs::msg::Pose pose;
   pose.position = data->pose.pose.position;
-  tf::Quaternion qAux;
-  qAux.setRPY(0.0, 0.0, data->odom.header);
-  tf::quaternionTFToMsg(qAux, pose.orientation);
-  tf::poseMsgToEigen(pose, this->localTf_);
+  tf2::Quaternion qAux;
+  qAux.setRPY(0.0, 0.0, tf2::getYaw(data->pose.pose.orientation));
+  pose.orientation = tf2::toMsg(qAux);
+  this->localTf_ = tf2::transformToEigen(pose);
 
   this->localTf_ = this->localTf_.inverse();
 
   this->localTfValid_ = true;
 }
 
-void WayComputer::update(TriangleSet &triangulation, const ros::Time &stamp) {
+void WayComputer::update(TriangleSet &triangulation, const rclcpp::Time &stamp) {
   if (not this->localTfValid_) {
-    ROS_WARN("[urinay] CarState not being received.");
+    RCLCPP_WARN(rclcpp::get_logger("urinay"), "CarState not being received.");
     return;
   }
 
@@ -326,7 +326,7 @@ void WayComputer::update(TriangleSet &triangulation, const ros::Time &stamp) {
 
   // #6: Check failsafe(s)
   if (this->params_.general_failsafe and this->way_.sizeAheadOfCar() < MIN_FAILSAFE_WAY_SIZE and !this->isLoopClosed_) {
-    ROS_WARN("[urinay] GENERAL FAILSAFE ACTIVATED!");
+    RCLCPP_WARN(rclcpp::get_logger("urinay"), "GENERAL FAILSAFE ACTIVATED!");
     this->computeWay(edgeVec, this->generalFailsafe_);
   }
 
