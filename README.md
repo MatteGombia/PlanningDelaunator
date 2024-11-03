@@ -1,3 +1,5 @@
+[![ROS2 Build](https://github.com/MatteGombia/PlanningDelaunator/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/MatteGombia/PlanningDelaunator/actions/workflows/cmake-single-platform.yml)
+
 # Urinay
 
 Urinay is a color-blind path+tracklimits algorithm developed for computing the centerline and track limits of the Formula Student driverless autocross track without the need of sensing the cones' color. It uses Delaunay triangulation and a limited-heuristic-ponderated tree search and only takes the cone positions and the car pose. Made for [BCN eMotorsport Formula Student team](https://bcnemotorsport.upc.edu) by me (Oriol Gorriz) entirely in C++ and to work with ROS.
