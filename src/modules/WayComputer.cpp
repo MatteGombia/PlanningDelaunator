@@ -399,7 +399,7 @@ Tracklimits WayComputer::getTracklimits() const {
 
 mmr_base::msg::MarkerArray WayComputer::getPathLimits() const {
   mmr_base::msg::MarkerArray res;
-  res.markers.header.stamp = this->lastStamp_;
+  res.markers[0].header.stamp = this->lastStamp_;
 
   // res.replan indicates if the Way is different from last iteration's
   //res.replan = this->way_ != this->lastWay_;
