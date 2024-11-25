@@ -16,6 +16,10 @@
   <depend>rclcpp</depend>
   <depend>rospy</depend>
   <depend>std_msgs</depend>
+
+  <depend>Eigen3</depend>
+
+  
   <export>
    <build_type>ament_cmake</build_type>
 </export>

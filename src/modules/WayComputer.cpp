@@ -266,7 +266,7 @@ WayComputer::WayComputer(const Params::WayComputer &params) : params_(params) {
   Way::init(params.way);
   this->generalFailsafe_.initGeneral(this->params_.search, this->params_.general_failsafe_safetyFactor, this->params_.failsafe_max_way_horizon_size);
 }
-
+/*
 void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) {
   geometry_msgs::msg::Pose pose;
   pose.position = data->pose.pose.position;
@@ -279,6 +279,27 @@ void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) 
 
   this->localTfValid_ = true;
 }
+*/
+
+void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) {
+    geometry_msgs::msg::Pose pose;
+    pose.position = data->pose.pose.position;
+
+    // Conversione del quaternion da geometry_msgs a tf2
+    tf2::Quaternion tf2_quaternion;
+    tf2::fromMsg(data->pose.pose.orientation, tf2_quaternion);    
+
+    // Creazione di un quaternion modificato passando lo yaw
+    tf2::Quaternion qAux;
+    qAux.setRPY(0.0, 0.0, tf2::impl::getYaw(tf2_quaternion));
+
+    pose.orientation = tf2::toMsg(qAux);
+
+    this->localTf_ = tf2::transformToEigen(pose);
+    this->localTf_ = this->localTf_.inverse();
+    this->localTfValid_ = true;
+}
+
 
 void WayComputer::update(TriangleSet &triangulation, const rclcpp::Time &stamp) {
   if (not this->localTfValid_) {
