@@ -295,7 +295,20 @@ void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) 
 
     pose.orientation = tf2::toMsg(qAux);
 
-    this->localTf_ = tf2::transformToEigen(pose);
+    // Costruzione manuale della trasformazione Eigen
+    Eigen::Isometry3d local_tf = Eigen::Isometry3d::Identity();
+
+    // Assegnazione della traslazione
+    local_tf.translation().x() = pose.position.x;
+    local_tf.translation().y() = pose.position.y;
+    local_tf.translation().z() = pose.position.z;
+
+    // Assegnazione della rotazione
+    Eigen::Quaterniond eigen_quat(
+        qAux.w(), qAux.x(), qAux.y(), qAux.z()
+    );
+    local_tf.rotate(eigen_quat);
+
     this->localTf_ = this->localTf_.inverse();
     this->localTfValid_ = true;
 }
