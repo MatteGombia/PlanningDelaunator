@@ -406,15 +406,20 @@ mmr_base::msg::MarkerArray WayComputer::getPathLimits() const {
 
   // Fill path
   std::vector<Point> path = this->wayToPublish_.getPath();
-  res.pose.markers.position.reserve(path.size());
-  for (const Point &p : path) {
-    res.markers.pose.position.push_back(p.gmPoint());
+
+  res.markers.reserve(path.size());   // Riserva spazio per i marker
+
+  for (const Point &p : path) {   // Riempie i marker con le posizioni del percorso
+    mmr_base::msg::Marker marker; // Crea un nuovo marker
+    marker.pose.position = p.gmPoint(); // Imposta la posizione
+    res.markers.push_back(marker); // Aggiungi il marker al vettore
   }
 
   // Fill Tracklimits
   Tracklimits tracklimits = this->wayToPublish_.getTracklimits();
   res.tracklimits.stamp = res.stamp;
-  res.tracklimits.left.reserve(tracklimits.first.size());
+  tracklimits.left.reserve(tracklimits.first.size());
+  //tracklimits.right.reserve(tracklimits.second.size());
   for (const Node &n : tracklimits.first) {
     res.tracklimits.left.push_back(n.cone());
   }
