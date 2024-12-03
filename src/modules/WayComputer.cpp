@@ -397,9 +397,8 @@ Tracklimits WayComputer::getTracklimits() const {
   return this->wayToPublish_.getTracklimits();
 }
 
-mmr_base::msg::MarkerArray WayComputer::getPathLimits() const {
+mmr_base::msg::MarkerArray WayComputer::getPathCenterLine() const {
   mmr_base::msg::MarkerArray res;
-  res.markers[0].header.stamp = this->lastStamp_;
 
   // res.replan indicates if the Way is different from last iteration's
   //res.replan = this->way_ != this->lastWay_;
@@ -411,24 +410,58 @@ mmr_base::msg::MarkerArray WayComputer::getPathLimits() const {
 
   for (const Point &p : path) {   // Riempie i marker con le posizioni del percorso
     mmr_base::msg::Marker marker; // Crea un nuovo marker
+    //visualizzazione Rvizz
+    marker.header.frame_id = "track"; // Imposta il frame_id
+    marker.scale.x = 0.1; 
+    marker.scale.y = 0.1;
+    marker.scale.z = 0.1;
+    marker.pose.orientation.w = 1.0;
+    marker.pose.orientation.x = 0.0;
+    marker.pose.orientation.y = 0.0;
+    marker.pose.orientation.z = 0.0;
+    marker.color.a = 1.0;
+
+    marker.header.stamp = this->lastStamp_;
     marker.pose.position = p.gmPoint(); // Imposta la posizione
     res.markers.push_back(marker); // Aggiungi il marker al vettore
   }
 
+  return res;
+}
+
+mmr_base::msg::MarkerArray WayComputer::getPathBorderLeft() const {
+
+  mmr_base::msg::MarkerArray res;
+  
   // Fill Tracklimits
   Tracklimits tracklimits = this->wayToPublish_.getTracklimits();
-  res.tracklimits.stamp = res.stamp;
-  tracklimits.left.reserve(tracklimits.first.size());
-  //tracklimits.right.reserve(tracklimits.second.size());
+  // res.marker.stamp = res.stamp;
+  // tracklimits.left.reserve(tracklimits.first.size());
+
   for (const Node &n : tracklimits.first) {
-    res.tracklimits.left.push_back(n.cone());
-  }
-  for (const Node &n : tracklimits.second) {
-    res.tracklimits.right.push_back(n.cone());
+    res.markers.push_back(n.cone());
   }
 
   // res.tracklimits.replan indicates if the n midpoints in front of the car
   // have varied from last iteration
-  res.tracklimits.replan = this->way_.quinEhLobjetiuDeLaSevaDiresio(this->lastWay_);
-  return res;
+  // res.tracklimits.replan = this->way_.quinEhLobjetiuDeLaSevaDiresio(this->lastWay_);
+ return res;
+}
+mmr_base::msg::MarkerArray WayComputer::getPathBorderRight() const {
+
+  mmr_base::msg::MarkerArray res;
+  
+  // Fill Tracklimits
+  Tracklimits tracklimits = this->wayToPublish_.getTracklimits();
+  // res.tracklimits.stamp = res.stamp;
+  // tracklimits.left.reserve(tracklimits.second.size());
+
+  for (const Node &n : tracklimits.second) {
+    res.markers.push_back(n.cone());
+  }
+
+  // res.tracklimits.replan indicates if the n midpoints in front of the car
+  // have varied from last iteration
+  // res.tracklimits.replan = this->way_.quinEhLobjetiuDeLaSevaDiresio(this->lastWay_);
+ return res;
 }

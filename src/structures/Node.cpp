@@ -77,6 +77,15 @@ double Node::angleWith(const Node &n0, const Node &n1) const {
 
 mmr_base::msg::Marker Node::cone() const {
   mmr_base::msg::Marker res;
+  res.header.frame_id = "track";
+  res.scale.x = 0.1; 
+  res.scale.y = 0.1;
+  res.scale.z = 0.1;
+  res.pose.orientation.w = 1.0;
+  res.pose.orientation.x = 0.0;
+  res.pose.orientation.y = 0.0;
+  res.pose.orientation.z = 0.0;
+  res.color.a = 1.0;
   res.id = this->id;
   res.pose.position = this->pointGlobal().gmPoint();
   //res.pose.position = this->point().gmPoint();
