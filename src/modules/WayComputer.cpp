@@ -401,12 +401,12 @@ mmr_base::msg::MarkerArray WayComputer::getPathCenterLine() const {
   mmr_base::msg::MarkerArray res;
 
   // res.replan indicates if the Way is different from last iteration's
-  //res.replan = this->way_ != this->lastWay_;
+  // res.replan = this->way_ != this->lastWay_;
 
   // Fill path
   std::vector<Point> path = this->wayToPublish_.getPath();
 
-  res.markers.reserve(path.size());   // Riserva spazio per i marker
+  // res.markers.reserve(path.size());   // Riserva spazio per i marker
 
   for (const Point &p : path) {   // Riempie i marker con le posizioni del percorso
     mmr_base::msg::Marker marker; // Crea un nuovo marker
@@ -453,6 +453,7 @@ mmr_base::msg::MarkerArray WayComputer::getPathBorderRight() const {
   
   // Fill Tracklimits
   Tracklimits tracklimits = this->wayToPublish_.getTracklimits();
+
   // res.tracklimits.stamp = res.stamp;
   // tracklimits.left.reserve(tracklimits.second.size());
 
