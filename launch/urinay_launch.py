@@ -17,7 +17,7 @@ def generate_launch_description():
             package='urinay',
             # namespace='clustering_ground_segmentation',
             name='urinay',
-            executable='urinay',
+            executable='urinay_exec',
             parameters=[config_node]
         )
 
