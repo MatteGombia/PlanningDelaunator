@@ -281,7 +281,7 @@ void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) 
 }
 */
 
-void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) {
+void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr data) {
     geometry_msgs::msg::Pose pose;
     pose.position = data->pose.pose.position;
 

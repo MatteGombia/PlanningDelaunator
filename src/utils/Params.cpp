@@ -18,7 +18,7 @@ Params::Params(rclcpp::Node::SharedPtr const nh) {
   std::string ns = nh->get_namespace();
   // Main
   main.package_path = ament_index_cpp::get_package_share_directory("urinay");
-  main.input_cones_topic = nh->declare_parameter<std::string>(ns + "/input_cones_topic", "/AS/P/ccat/cones");
+  main.input_cones_topic = nh->declare_parameter<std::string>(ns + "/input_cones_topic", "/AS/C/ccat/cones");
   main.input_pose_topic = nh->declare_parameter<std::string>(ns + "/input_pose_topic", "/AS/C/state");
   main.output_full_center_topic = nh->declare_parameter<std::string>(ns + "/output_full_center_topic", "/AS/P/tracklimits/fullCenter");
   main.output_full_left_topic = nh->declare_parameter<std::string>(ns + "/output_full_left_topic", "/AS/P/tracklimits/fullLeft");

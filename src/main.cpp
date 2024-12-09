@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 
   // Subscribers & Publishers
   auto subCones = nh->create_subscription<mmr_base::msg::MarkerArray>(params->main.input_cones_topic, 1, callback_ccat);
-  auto subPose = nh->create_subscription<geometry_msgs::msg::PoseStamped>(params->main.input_pose_topic, 1, std::bind(&WayComputer::stateCallback, wayComputer, std::placeholders::_1));
+  auto subPose = nh->create_subscription<nav_msgs::msg::Odometry>(params->main.input_pose_topic, 1, std::bind(&WayComputer::stateCallback, wayComputer, std::placeholders::_1));
 
   // publishers
   pubPartialCenterLine = nh->create_publisher<mmr_base::msg::MarkerArray>(params->main.output_partial_center_topic, 1);

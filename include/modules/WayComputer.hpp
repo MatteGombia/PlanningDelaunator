@@ -186,7 +186,7 @@ class WayComputer {
    *
    * @param[in] data
    */
-  void stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data);
+  void stateCallback(const nav_msgs::msg::Odometry::SharedPtr data);
 
   /**
    * @brief Takes the Delaunay triangle set and computes the Way.
