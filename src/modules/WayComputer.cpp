@@ -385,7 +385,7 @@ const bool &WayComputer::isLocalTfValid() const {
   return this->localTfValid_;
 }
 
-const Eigen::Affine3d &WayComputer::getLocalTf() const {
+ const Eigen::Affine3d &WayComputer::getLocalTf() const {
   return this->localTf_;
 }
 

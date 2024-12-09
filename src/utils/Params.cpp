@@ -20,8 +20,13 @@ Params::Params(rclcpp::Node::SharedPtr const nh) {
   main.package_path = ament_index_cpp::get_package_share_directory("urinay");
   main.input_cones_topic = nh->declare_parameter<std::string>(ns + "/input_cones_topic", "/AS/P/ccat/cones");
   main.input_pose_topic = nh->declare_parameter<std::string>(ns + "/input_pose_topic", "/AS/C/state");
-  main.output_full_topic = nh->declare_parameter<std::string>(ns + "/output_full_topic", "/AS/P/tracklimits/full");
-  main.output_partial_topic = nh->declare_parameter<std::string>(ns + "/output_partial_topic", "/AS/P/tracklimits/partial");
+  main.output_full_center_topic = nh->declare_parameter<std::string>(ns + "/output_full_center_topic", "/AS/P/tracklimits/fullCenter");
+  main.output_full_left_topic = nh->declare_parameter<std::string>(ns + "/output_full_left_topic", "/AS/P/tracklimits/fullLeft");
+  main.output_full_right_topic = nh->declare_parameter<std::string>(ns + "/output_full_right_topic", "/AS/P/tracklimits/fullRight");
+  main.output_partial_center_topic = nh->declare_parameter<std::string>(ns + "/output_partial_center_topic", "/AS/P/tracklimits/partialCenter");
+  main.output_partial_left_topic = nh->declare_parameter<std::string>(ns + "/output_partial_left_topic", "/AS/P/tracklimits/partialLeft");
+  main.output_partial_right_topic = nh->declare_parameter<std::string>(ns + "/output_partial_right_topic", "/AS/P/tracklimits/partialRight");
+  
   main.shutdown_on_loop_closure = nh->declare_parameter<bool>(ns + "/shutdown_on_loop_closure", true);
   main.min_cone_confidence = nh->declare_parameter<float>(ns + "/min_cone_confidence", 0.0);
 
