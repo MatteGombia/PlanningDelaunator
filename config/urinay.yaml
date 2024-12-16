@@ -1,7 +1,7 @@
 # I/O Topics
 /urinay:
   ros__parameters:
-    input_cones_topic:              "/slam/cones_positions"
+    input_cones_topic:              "/output_marker_array"
     input_pose_topic:               "/Odometry/fastLioOdom"
     output_full_topic:              "/AS/P/pathlimits/full"
     output_partial_topic:           "/AS/P/pathlimits/partial"

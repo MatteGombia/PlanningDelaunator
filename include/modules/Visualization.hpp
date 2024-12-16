@@ -13,6 +13,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <mmr_base/msg/marker.hpp>
 #include <mmr_base/msg/marker_array.hpp>
+#include <visualization_msgs/msg/marker.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 #include "structures/Way.hpp"
 #include "utils/Params.hpp"
