@@ -34,42 +34,50 @@ rclcpp::Publisher<mmr_base::msg::MarkerArray>::SharedPtr pubFullBorderLeft;
 rclcpp::Publisher<mmr_base::msg::MarkerArray>::SharedPtr pubFullBorderRight;
 
 // This is the map callback
-void callback_ccat(const mmr_base::msg::MarkerArray &data)
+void callback_ccat(const mmr_base::msg::Marker::SharedPtr data)
 {
-  if (not wayComputer->isLocalTfValid())
+  RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] CCAT callback");
+
+  if (!wayComputer->isLocalTfValid())
   {
     RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] CarState not being received.");
     return;
   }
-  if (data.markers.empty())
+  if (data->points.empty())
   {
     RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] reading empty set of cones.");
     return;
   }
 
   Time::tick("computation"); // Start measuring time
-
-  // Convert to Node vector
+  int id = 0;
+  //Convert to Node vector
   std::vector<Node> nodes;
-  nodes.reserve(data.markers.size());
-  for (const mmr_base::msg::Marker c : data.markers)
+  nodes.reserve(data->points.size());
+  for (const geometry_msgs::msg::Point c: data->points)
   {
     // if (c.confidence >= params->main.min_cone_confidence)
-    Node n = Node(c);
+    // RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] point from slam cones: x = %f, y = %f", c.x, c.y);
+    Node n = Node(static_cast<double>(c.x), static_cast<double>(c.y),static_cast<double>(c.x), static_cast<double>(c.y), id++);
     nodes.push_back(n);
   }
+
+  RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] the size of nodes is %ld", nodes.size()); //nodes is not empty
 
   // Update local coordinates of Nodes (makes original local coords unnecessary)
   for (const Node &n : nodes)
   {
     n.updateLocal(wayComputer->getLocalTf());
+    RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] node: x = %f, y = %f", n.x(), n.y());
   }
 
   // Delaunay triangulation
   TriangleSet triangles = DelaunayTri::compute(nodes);
 
+  RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] the size of triangles is %ld", triangles.size()); //triangles is empty
+
   // Update the way with the new triangulation
-  wayComputer->update(triangles, data.markers[0].header.stamp);
+  wayComputer->update(triangles, data->header.stamp);
 
   // Publish loop and write tracklimits to a file
   if (wayComputer->isLoopClosed())
@@ -111,8 +119,8 @@ int main(int argc, char **argv)
   Visualization::getInstance().init(nh, params->visualization);
 
   // Subscribers & Publishers
-  auto subCones = nh->create_subscription<mmr_base::msg::MarkerArray>(params->main.input_cones_topic, 1, callback_ccat);
-  auto subPose = nh->create_subscription<nav_msgs::msg::Odometry>(params->main.input_pose_topic, 1, std::bind(&WayComputer::stateCallback, wayComputer, std::placeholders::_1));
+  auto subCones = nh->create_subscription<mmr_base::msg::Marker>("/slam/cones_positions", 1, callback_ccat);
+  auto subPose = nh->create_subscription<nav_msgs::msg::Odometry>("/Odometry", 1, std::bind(&WayComputer::stateCallback, wayComputer, std::placeholders::_1));
 
   // publishers
   pubPartialCenterLine = nh->create_publisher<mmr_base::msg::MarkerArray>(params->main.output_partial_center_topic, 1);

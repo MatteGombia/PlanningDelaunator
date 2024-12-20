@@ -90,6 +90,11 @@ class Node {
    */
   Node(const mmr_base::msg::Marker &c);
 
+  //Node(const geometry_msgs::msg::Point &c, int id);
+
+  Node(const Node& n) = default;
+
+  Node& operator=(const Node& n) = default;
   /**
    * @brief Returns the Node x local coordinate.
    */

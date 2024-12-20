@@ -284,7 +284,7 @@ void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) 
 void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr data) {
     geometry_msgs::msg::Pose pose;
     pose.position = data->pose.pose.position;
-
+    RCLCPP_INFO(rclcpp::get_logger("urinay"), "CarState received: x = %f, y = %f, z = %f", pose.position.x, pose.position.y, pose.position.z);
     // Conversione del quaternion da geometry_msgs a tf2
     tf2::Quaternion tf2_quaternion;
     tf2::fromMsg(data->pose.pose.orientation, tf2_quaternion);    

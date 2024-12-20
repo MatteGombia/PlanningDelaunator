@@ -31,6 +31,10 @@ Node::Node(const double &x, const double &y, const double &xGlobal, const double
 Node::Node(const mmr_base::msg::Marker &c)
     : Node(c.pose.position.x, c.pose.position.y, c.pose.position.x, c.pose.position.y, c.id) {}
 
+// Node::Node(const geometry_msgs::msg::Point &c, int id)
+//     : Node(c.x, c.y, c.x, c.y, id) {}
+    
+
 const double &Node::x() const {
   return this->point_.x;
 }
