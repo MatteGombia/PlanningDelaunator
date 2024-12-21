@@ -281,35 +281,30 @@ void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr &data) 
 }
 */
 
-void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr data) {
+void WayComputer::stateCallback(const nav_msgs::msg::Odometry::SharedPtr odom) {
     geometry_msgs::msg::Pose pose;
-    pose.position = data->pose.pose.position;
-    RCLCPP_INFO(rclcpp::get_logger("urinay"), "CarState received: x = %f, y = %f, z = %f", pose.position.x, pose.position.y, pose.position.z);
-    // Conversione del quaternion da geometry_msgs a tf2
-    tf2::Quaternion tf2_quaternion;
-    tf2::fromMsg(data->pose.pose.orientation, tf2_quaternion);    
+    pose.position = odom->pose.pose.position;
 
-    // Creazione di un quaternion modificato passando lo yaw
+    // Extract yaw from the existing quaternion orientation
+    tf2::Quaternion q_orig;
+    tf2::fromMsg(odom->pose.pose.orientation, q_orig);
+
+    double roll, pitch, yaw;
+    tf2::Matrix3x3(q_orig).getRPY(roll, pitch, yaw);
+
+    // Recreate the quaternion with zero roll and pitch,
+    // preserving only the yaw to mimic the original logic
     tf2::Quaternion qAux;
-    qAux.setRPY(0.0, 0.0, tf2::impl::getYaw(tf2_quaternion));
-
+    qAux.setRPY(0.0, 0.0, yaw);
     pose.orientation = tf2::toMsg(qAux);
 
-    // Costruzione manuale della trasformazione Eigen
-    Eigen::Isometry3d local_tf = Eigen::Isometry3d::Identity();
+    Eigen::Isometry3d eigen_pose;
+    tf2::fromMsg(pose, eigen_pose);
 
-    // Assegnazione della traslazione
-    local_tf.translation().x() = pose.position.x;
-    local_tf.translation().y() = pose.position.y;
-    local_tf.translation().z() = pose.position.z;
+    // Invert the transform
+    this->localTf_ = eigen_pose.inverse();
 
-    // Assegnazione della rotazione
-    Eigen::Quaterniond eigen_quat(
-        qAux.w(), qAux.x(), qAux.y(), qAux.z()
-    );
-    local_tf.rotate(eigen_quat);
-
-    this->localTf_ = this->localTf_.inverse();
+    // Mark as valid
     this->localTfValid_ = true;
 }
 
@@ -407,18 +402,23 @@ mmr_base::msg::MarkerArray WayComputer::getPathCenterLine() const {
   std::vector<Point> path = this->wayToPublish_.getPath();
 
   // res.markers.reserve(path.size());   // Riserva spazio per i marker
-
+  int id = 0;
   for (const Point &p : path) {   // Riempie i marker con le posizioni del percorso
     mmr_base::msg::Marker marker; // Crea un nuovo marker
     //visualizzazione Rvizz
     marker.header.frame_id = "track"; // Imposta il frame_id
-    marker.scale.x = 0.1; 
-    marker.scale.y = 0.1;
-    marker.scale.z = 0.1;
+    marker.id = id++;
+    marker.scale.x = 0.3; 
+    marker.scale.y = 0.3;
+    marker.scale.z = 0.3;
     marker.pose.orientation.w = 1.0;
     marker.pose.orientation.x = 0.0;
     marker.pose.orientation.y = 0.0;
     marker.pose.orientation.z = 0.0;
+
+    marker.color.r = 1.0;
+    marker.color.g = 0.0;
+    marker.color.b = 0.0;
     marker.color.a = 1.0;
 
     marker.header.stamp = this->lastStamp_;

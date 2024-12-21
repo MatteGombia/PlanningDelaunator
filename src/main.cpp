@@ -57,7 +57,7 @@ void callback_ccat(const mmr_base::msg::Marker::SharedPtr data)
   for (const geometry_msgs::msg::Point c: data->points)
   {
     // if (c.confidence >= params->main.min_cone_confidence)
-    // RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] point from slam cones: x = %f, y = %f", c.x, c.y);
+    RCLCPP_INFO(rclcpp::get_logger(""), "[urinay] point from slam cones: x = %f, y = %f", c.x, c.y);
     Node n = Node(static_cast<double>(c.x), static_cast<double>(c.y),static_cast<double>(c.x), static_cast<double>(c.y), id++);
     nodes.push_back(n);
   }
