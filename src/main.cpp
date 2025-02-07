@@ -115,6 +115,7 @@ int main(int argc, char **argv)
   auto nh = rclcpp::Node::make_shared("urinay");
 
   params = new Params(nh);
+  
   wayComputer = new WayComputer(params->wayComputer);
   Visualization::getInstance().init(nh, params->visualization);
 

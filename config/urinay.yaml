@@ -1,5 +1,5 @@
 # I/O Topics
-/urinay:
+urinay:
   ros__parameters:
     input_cones_topic:              "/slam/cones_positions"
     input_pose_topic:               "/Odometry/a"
